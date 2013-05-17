@@ -61,8 +61,7 @@
 				offset = option.min ;
 			}else{
 				offset = option.max * Math.abs(delta) / max_delta;
-			}  
-		
+			}  		
 			offset =  delta > 0 ? -offset : offset;			
 			
 			return Math.round(offset);
@@ -80,7 +79,7 @@
 			scroll_top = Math.max(scroll_top, 0);						
 			scrollbar.css({top: scroll_top});
 			
-			//计算content的scrollTop值
+			//根据scrollbar的top值计算content
 			content_pos = parseInt(content.css('top').replace(/px/, ''));			
 			content_pos = Math.round(scroll_top * content_height / container_height);			
 			content_pos = scroll_top > 0 ? -content_pos : content_pos;			
