@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<style>
+#container {
+	margin:0 auto;
+	position:relative;
+	padding:10px;
+	border: 1px solid;
+}
+#scroll_bar {
+width:7px; 
+border-radius:25px; 
+position:absolute; 
+border:1px solid rgb(255, 255, 255); 
+background-color:rgb(66, 66, 66); 
+z-index:999; 
+}
+</style>
+</head>
+<body style="overflow:hidden;">
+<div style="width:500px; height:500px; overflow:hidden;" id="container" >
+	<div id="scroll_bar" style="right:0px; top:0px;"></div>
+	<div style="overflow:scroll; width:540px; height:520px;" id="content">
+		<div class="cc">
+			<p>这是文字第一段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第二段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第三段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第四段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第五段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第六段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第七段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第八段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第九段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>						
+		</div>
+	</div>
+</div>
+<script>	
+	var container_height = $('#container').height();
+	var content_height = $('.cc').height();
+	var scroll_height = Math.floor(container_height / content_height * 100);
+	$('#scroll_bar').height(scroll_height);
+	
+	var scroll_move = container_height - scroll_height;
+	var content_move = content_height - container_height;
+	
+	$('#content').bind('scroll', function(e){
+		var y = $('#content').scrollTop()
+		var move = Math.floor(y / content_move * scroll_move);
+		$('#scroll_bar').css({top:move});
+	});
+</script>
+</body>
+</html>
