@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script>
+(function($) {
+	function ENV() {
+		var ua = navigator.userAgent.toLowerCase();
+		var browser = {};
+		
+		/mise ([\d.]+)/.test(ua) ? browser.ie = ua.match(/msie ([\d.]+)/)[1] : 
+		/firefox\/([\d.]+)/.test(ua) ? browser.firefox = ua.match(/firefox\/([\d.]+)/)[1] :
+		/chrome\/([\d.]+)/.test(ua) ? browser.chrome = ua.match(/chrome\/([\d.]+)/)[1] : 
+		/opera.([\d.]+)/.test(ua) ? browser.opera = ua.match(/opera.([\d.]+)/)[1] :
+		/version.([\d.]+).*?safari/.test(ua) ? browser.safari = ua.match(/version\/([\d.]+)/)[1] : 0;
+        
+		return browser;
+	}	
+	
+	function ScrollBar(content, scrollbar, This) {
+		var container, content, scrollbar, container_height, content_height, scrollbar_height, 
+			scroll_top, content_pos,
+		    max_delta = 0; //缓存最大的加速度
+		
+		var init = (function() {
+			container   = This;
+			content     = $(content);
+			scrollbar   = $(scrollbar);
+		
+			container_height = This.height();
+			content_height = content.height();		
+			scrollbar_height = Math.floor(container_height * (container_height / content_height));
+			
+			if (content_height > container_height) {
+				scrollbar.height(scrollbar_height).show();
+			}
+	
+		})(); 
+		
+		//speedToAxis方法是将wheelDelta转换为适当的值
+		this.speedToAxis = function(wheelDelta, o) {			
+			var option, offset, delta;
+
+			//设定一个最大值和最小值，让鼠标滚轮最快也不超过这个速度，最慢时也不小于最小值				
+			option = $.extend({
+				max: 20,
+				min: 2
+			}, o);
+
+			offset = 0;
+			delta = wheelDelta || 0;
+			
+			//缓存当鼠标滚动时的最大加速度
+			if (Math.abs(delta) > max_delta) {
+				max_delta = Math.abs(delta); 
+			}
+
+			//计算wheelDelta值的偏移量
+			if (max_delta == 0) {
+				offset = option.min ;
+			}else{
+				offset = option.max * Math.abs(delta) / max_delta;
+			}  
+		
+			offset =  delta > 0 ? -offset : offset;			
+			
+			return Math.round(offset);
+
+		}	
+		
+		this.move = function(i) {
+			//console.log(i);
+			//计算scrollbar的top值
+			scroll_top = parseInt(scrollbar.css('top').replace(/px/, ''));
+			scroll_top += i;
+			
+			//计算scrollbar的上下边界
+			scroll_top = Math.min(scroll_top, container_height - scrollbar_height);
+			scroll_top = Math.max(scroll_top, 0);						
+			scrollbar.css({top: scroll_top});
+			
+			//计算content的scrollTop值
+			content_pos = parseInt(content.css('top').replace(/px/, ''));			
+			content_pos = Math.round(scroll_top * content_height / container_height);			
+			content_pos = scroll_top > 0 ? -content_pos : content_pos;			
+
+			content.css({top: content_pos});
+			
+		}
+		
+		this.isFirefox = function() {
+			var a = ENV();
+			if (a.firefox) {
+				return true;
+			}
+			return false;
+		}	
+		
+	}
+	
+	$.fn.scrollBar = function(content, track) {
+		if (!content || !track) {
+			console.log('接口有问题！')
+			return;
+		}
+		
+		var scrollBar = new ScrollBar(content, track, this);
+		var mousewheel = scrollBar.isFirefox() ? "DOMMouseScroll" : "mousewheel";
+		
+		this.bind(mousewheel, function(e){
+	    	var option = {max: 40,min: 5};
+			var wheel_delta = scrollBar.isFirefox() ? -e.originalEvent.detail : e.originalEvent.wheelDelta;
+			var y = scrollBar.speedToAxis(wheel_delta, option);
+			scrollBar.move(y);
+			e.preventDefault();
+		});
+	}
+
+})(jQuery);
+
+$(document).ready(function() {
+	$('#container').scrollBar('#content', '#scroll_bar');
+});
+</script>
+<style>
+#container { margin:0 auto; position:relative; padding-left:10px; border: 1px solid;}
+#scroll_bar { width:7px; height:32px; border-radius:25px; position:absolute; border:1px solid rgb(255, 255, 255); background-color:rgb(66, 66, 66); 
+z-index:999; top:0px;right:1px;}
+#content {width:540px; position:absolute; top:0; line-height:20px;}
+</style>
+</head>
+<body style="overflow:hidden;">
+<div style="width:500px; height:500px; overflow:hidden;" id="container" >
+	<div id="content">
+			<p>这是文字第一段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第二段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第三段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第四段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第五段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第六段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第七段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第八段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>这是文字第九段</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>
+			<p>test</p>						
+	</div>
+	<div id="scroll_bar"></div>
+</div>
+</body>
+</html>
